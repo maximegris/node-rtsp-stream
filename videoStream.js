@@ -33,6 +33,20 @@ VideoStream.prototype.stop = function() {
   return this
 }
 
+VideoStream.prototype.restart = function () {
+  if (this.mpeg1Muxer) {
+    this.mpeg1Muxer.stream.stop()
+    console.log('ffmpeg is restart')
+    this.inputStreamStarted = false;
+    this.stream = void 0;
+    this.startMpeg1Stream();
+    this.mpeg1Muxer.on('exitWithError', function (code) {
+      console.log('ffmpeg closed on ' + code)
+
+    })
+  }
+}
+
 VideoStream.prototype.startMpeg1Stream = function() {
   var gettingInputData, gettingOutputData, inputData, outputData
   this.mpeg1Muxer = new Mpeg1Muxer({
@@ -100,7 +114,7 @@ VideoStream.prototype.pipeStreamToSocketServer = function() {
       if (client.readyState === 1) {
         results.push(client.send(data, opts))
       } else {
-        results.push(console.log("Error: Client from remoteAddress " + client.remoteAddress + " not connected."))
+        results.push(console.log("Error: Client from remoteAddress " + (client ? client.remoteAddress : 'null') + " not connected."))
       }
     }
     return results

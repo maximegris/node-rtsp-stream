@@ -21,11 +21,13 @@ Mpeg1Muxer = function(options) {
     }
   }
   this.spawnOptions = [
+    "-rtsp_transport",
+    "tcp",
+    "-thread_queue_size",
+    "512",
     "-i",
     this.url,
     '-f',
-    'mpegts',
-    '-codec:v',
     'mpeg1video',
     // additional ffmpeg options go here
     ...this.additionalFlags,
@@ -41,6 +43,12 @@ Mpeg1Muxer = function(options) {
   this.stream.stderr.on('data', (data) => {
     return this.emit('ffmpegStderr', data)
   })
+  this.stream.stop = function() {
+    // console.log(self.stream.pid)
+    self.stream.stdin.pause();
+    self.stream.kill()
+    console.log('ffmpeg is be kill')
+  }
   this.stream.on('exit', (code, signal) => {
     if (code === 1) {
       console.error('RTSP stream exited with error')
