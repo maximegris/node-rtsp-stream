@@ -33,7 +33,7 @@ Mpeg1Muxer = function(options) {
     ...this.additionalFlags,
     '-'
   ]
-  this.stream = child_process.spawn("ffmpeg", this.spawnOptions, {
+  this.stream = child_process.spawn(options.ffmpegPath, this.spawnOptions, {
     detached: false
   })
   this.inputStreamStarted = true
