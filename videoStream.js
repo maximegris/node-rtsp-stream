@@ -19,6 +19,8 @@ VideoStream = function(options) {
   this.wsPort = options.wsPort
   this.inputStreamStarted = false
   this.stream = undefined
+  this.ffmpegOptions = options.ffmpegOptions
+  this.ffmpegPath = this.options.ffmpegPath
   this.startMpeg1Stream()
   this.pipeStreamToSocketServer()
   return this
@@ -48,11 +50,11 @@ VideoStream.prototype.restart = function () {
 }
 
 VideoStream.prototype.startMpeg1Stream = function() {
-  var gettingInputData, gettingOutputData, inputData, outputData
+  var gettingInputData, inputData
   this.mpeg1Muxer = new Mpeg1Muxer({
-    ffmpegOptions: this.options.ffmpegOptions,
+    ffmpegOptions: this.ffmpegOptions,
     url: this.streamUrl,
-    ffmpegPath: this.options.ffmpegPath == undefined ? "ffmpeg" : this.options.ffmpegPath
+    ffmpegPath: this.ffmpegPath == undefined ? "ffmpeg" : this.ffmpegPath
   })
   this.stream = this.mpeg1Muxer.stream
   if (this.inputStreamStarted) {
@@ -63,8 +65,6 @@ VideoStream.prototype.startMpeg1Stream = function() {
   })
   gettingInputData = false
   inputData = []
-  gettingOutputData = false
-  outputData = []
   this.mpeg1Muxer.on('ffmpegStderr', (data) => {
     var size
     data = data.toString()
@@ -73,10 +73,6 @@ VideoStream.prototype.startMpeg1Stream = function() {
     }
     if (data.indexOf('Output #') !== -1) {
       gettingInputData = false
-      gettingOutputData = true
-    }
-    if (data.indexOf('frame') === 0) {
-      gettingOutputData = false
     }
     if (gettingInputData) {
       inputData.push(data.toString())

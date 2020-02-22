@@ -1,6 +1,6 @@
 {
   "name": "node-rtsp-stream",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,9 +14,9 @@
   "author": "David Jsa <david@jsa.me>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "7.0.1"
   },
   "dependencies": {
-    "ws": "7.2.0"
+    "ws": "7.2.1"
   }
 }
